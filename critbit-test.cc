@@ -61,6 +61,7 @@ test_allprefixed() {
   for (unsigned i = 0; elems[i]; ++i) critbit0_insert(&tree, elems[i]);
 
   set<string> a;
+
   critbit0_allprefixed(&tree, "a", allprefixed_cb, &a);
   if (a.size() != 4 ||
       a.find("a") == a.end() ||
@@ -69,6 +70,15 @@ test_allprefixed() {
       a.find("abz") == a.end()) {
     abort();
   }
+  a.clear();
+
+  critbit0_allprefixed(&tree, "aa", allprefixed_cb, &a);
+  if (a.size() != 2 ||
+      a.find("aa") == a.end() ||
+      a.find("aaz") == a.end()) {
+    abort();
+  }
+  a.clear();
 
   critbit0_clear(&tree);
 }

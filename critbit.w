@@ -130,7 +130,7 @@ as the mask.  If it did, the result is all ones. The latter case is the unique
 this to obtain the direction.
 
 Note also that our strings are treated as if they had an infinitely long suffix
-of |NUL| bytes following them. Thus, if the critical bit is beyound the end of
+of |NUL| bytes following them. Thus, if the critical bit is beyond the end of
 our string, we treat it as if it had a zero bit there.
 
 @<Calculate direction@>=
@@ -255,7 +255,7 @@ and turning the third part to all ones. Thus the sets are disjoint and
 |x & (x-1)| is false.
 
 So, we have a test for finding values with only a single bit set. Now consider
-that, if the test fails, |x & (x-1)| must preseve the most-significant one and
+that, if the test fails, |x & (x-1)| must preserve the most-significant one and
 must be less than |x|: since the bit pattern in the third part changes, at
 least one bit must be zeroed. Therefore, repeatedly applying the test and, if
 it fails, updating |x| in this fashion, must result in a value with only the
@@ -329,7 +329,7 @@ That would be a valid tree for searching as far as our searching algorithm
 goes, but it does make a mess of predecessor and successor operations when you
 can't know that the least-significant-bit wasn't a fork at the top of the tree.
 
-So, in short, we need the order of the crit-bits to match the lexocographical
+So, in short, we need the order of the crit-bits to match the lexicographical
 order that we expect the predecessor and successor operations to follow. Thus,
 inserting the new node in the tree involves walking the tree from the root to
 find the correct position to insert at.
@@ -380,7 +380,7 @@ int critbit0_delete(critbit0_tree *t, const char *u) {
 
 @ Deleting from the empty tree
 
-Since no element is the member of the emtpy tree, this is a very easy case: we
+Since no element is the member of the empty tree, this is a very easy case: we
 can just return 0.
 
 @<Deal with deleting from an...@>=
@@ -468,7 +468,7 @@ it, mutating the tree such that it is empty on exit.
 @c
 static void
 traverse(void *top) {
-  @<Recursivly free current node@>@;
+  @<Recursively free current node@>@;
 }
 
 void critbit0_clear(critbit0_tree *t)
@@ -477,13 +477,13 @@ void critbit0_clear(critbit0_tree *t)
   t->root = NULL;
 }
 
-@ Recursivly clearing the tree
+@ Recursively clearing the tree
 
 Each pointer in the tree has to be tested to see if it's a pointer to an
 internal node (a |critbit0_node|) or to a malloced string. If it's a node, we
-need to recursivly free its children.
+need to recursively free its children.
 
-@<Recursivly free...@>=
+@<Recursively free...@>=
   uint8 *p = top;
 
   if (1 & (intptr_t) p) {
@@ -538,9 +538,9 @@ critbit0_allprefixed(critbit0_tree *t, const char *prefix,
 
 The |top| pointer points to the internal node at the top of the subtree which
 contains exactly the subset of elements matching the given prefix. Since our
-critbit values are sorted as we decend the tree, this subtree exists (if the
+critbit values are sorted as we descend the tree, this subtree exists (if the
 subset is non-empty) and can be detected by checking for the critbit advancing
-beyound the length of the prefix.
+beyond the length of the prefix.
 
 @<Walk tree, maint...@>=
   while (1 & (intptr_t) p) {
@@ -567,7 +567,7 @@ of the external node that we have arrived at.
 
 The |allprefixed_traverse| function is called with the root of a subtree as the
 |top| argument. We need to test the LSB of this pointer to see if it's an
-internal node. If so, we recursivly walk down the subtree and return. Otherwise
+internal node. If so, we recursively walk down the subtree and return. Otherwise
 we fall through into the code from the section below for handling an external
 node.
 
