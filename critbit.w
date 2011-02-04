@@ -323,11 +323,12 @@ looking like this:
 \endtikzpicture
 }
 
-(Where internal nodes are shaded light gray and contain the critical bit.)
+(Where internal nodes are shaded light gray and contain the critical bit,
+counting from the left.)
 
 That would be a valid tree for searching as far as our searching algorithm
-goes, but it does make a mess of predecessor and successor operations when you
-can't know that the least-significant-bit wasn't a fork at the top of the tree.
+goes, but it does make a mess of predecessor and successor operations when the
+forks might not test the bits in any special order.
 
 So, in short, we need the order of the crit-bits to match the lexicographical
 order that we expect the predecessor and successor operations to follow. Thus,
