@@ -242,7 +242,7 @@ testing bits 7..0, instead we use the following trick:
 
 The only non-zero values for which the sets of true bits for |x| and |x-1| are
 disjoint, are powers of two. To see this consider the bit representation of the
-value in three pieces: a series of zeros (maybe empty), a one and a series of
+value in three pieces: a series of zeros (maybe empty), a one, and zero or more
 ones and zeros.  Since we are only considering non-zero values this can be
 performed without loss of generality. If the third part contains any ones, this
 number is not a power of two and subtracting one will only alter the third
