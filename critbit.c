@@ -142,10 +142,12 @@ different_byte_found:
 #line 204 "./critbit.w"
 
 /*12:*/
-#line 267 "./critbit.w"
+#line 250 "./critbit.w"
 
-while(newotherbits&(newotherbits-1))newotherbits&= newotherbits-1;
-newotherbits^= 255;
+newotherbits|= newotherbits>>1;
+newotherbits|= newotherbits>>2;
+newotherbits|= newotherbits>>4;
+newotherbits= (newotherbits&~(newotherbits>>1))^255;
 uint8 c= p[newbyte];
 int newdirection= (1+(newotherbits|c))>>8;
 
@@ -157,10 +159,10 @@ int newdirection= (1+(newotherbits|c))>>8;
 #line 176 "./critbit.w"
 
 /*13:*/
-#line 275 "./critbit.w"
+#line 260 "./critbit.w"
 
 /*14:*/
-#line 286 "./critbit.w"
+#line 271 "./critbit.w"
 
 critbit0_node*newnode;
 if(posix_memalign((void**)&newnode,sizeof(void*),sizeof(critbit0_node)))return 0;
@@ -177,10 +179,10 @@ newnode->otherbits= newotherbits;
 newnode->child[1-newdirection]= x;
 
 /*:14*/
-#line 276 "./critbit.w"
+#line 261 "./critbit.w"
 
 /*15:*/
-#line 341 "./critbit.w"
+#line 326 "./critbit.w"
 
 void**wherep= &t->root;
 for(;;){
@@ -199,7 +201,7 @@ newnode->child[newdirection]= *wherep;
 *wherep= (void*)(1+(char*)newnode);
 
 /*:15*/
-#line 277 "./critbit.w"
+#line 262 "./critbit.w"
 
 
 /*:13*/
@@ -210,7 +212,7 @@ return 2;
 }
 
 /*:8*//*16:*/
-#line 364 "./critbit.w"
+#line 349 "./critbit.w"
 
 int critbit0_delete(critbit0_tree*t,const char*u){
 const uint8*ubytes= (void*)u;
@@ -222,15 +224,15 @@ critbit0_node*q= 0;
 int direction= 0;
 
 /*17:*/
-#line 387 "./critbit.w"
+#line 372 "./critbit.w"
 
 if(!p)return 0;
 
 /*:17*/
-#line 374 "./critbit.w"
+#line 359 "./critbit.w"
 
 /*18:*/
-#line 420 "./critbit.w"
+#line 405 "./critbit.w"
 
 while(1&(intptr_t)p){
 whereq= wherep;
@@ -243,19 +245,19 @@ p= *wherep;
 }
 
 /*:18*/
-#line 375 "./critbit.w"
+#line 360 "./critbit.w"
 
 /*19:*/
-#line 438 "./critbit.w"
+#line 423 "./critbit.w"
 
 if(0!=strcmp(u,(const char*)p))return 0;
 free(p);
 
 /*:19*/
-#line 376 "./critbit.w"
+#line 361 "./critbit.w"
 
 /*20:*/
-#line 452 "./critbit.w"
+#line 437 "./critbit.w"
 
 if(!whereq){
 t->root= 0;
@@ -266,19 +268,19 @@ return 1;
 free(q);
 
 /*:20*/
-#line 377 "./critbit.w"
+#line 362 "./critbit.w"
 
 
 return 1;
 }
 
 /*:16*//*21:*/
-#line 469 "./critbit.w"
+#line 454 "./critbit.w"
 
 static void
 traverse(void*top){
 /*22:*/
-#line 487 "./critbit.w"
+#line 472 "./critbit.w"
 
 uint8*p= top;
 
@@ -292,7 +294,7 @@ free(p);
 }
 
 /*:22*/
-#line 472 "./critbit.w"
+#line 457 "./critbit.w"
 
 }
 
@@ -303,13 +305,13 @@ t->root= NULL;
 }
 
 /*:21*//*23:*/
-#line 515 "./critbit.w"
+#line 500 "./critbit.w"
 
 static int
 allprefixed_traverse(uint8*top,
 int(*handle)(const char*,void*),void*arg){
 /*26:*/
-#line 575 "./critbit.w"
+#line 560 "./critbit.w"
 
 if(1&(intptr_t)top){
 critbit0_node*q= (void*)(top-1);
@@ -323,13 +325,13 @@ return 1;
 }
 
 /*:26*/
-#line 519 "./critbit.w"
+#line 504 "./critbit.w"
 
 /*27:*/
-#line 592 "./critbit.w"
+#line 577 "./critbit.w"
 
 return handle((const char*)top,arg);/*:27*/
-#line 520 "./critbit.w"
+#line 505 "./critbit.w"
 
 }
 
@@ -343,7 +345,7 @@ uint8*top= p;
 
 if(!p)return 1;
 /*24:*/
-#line 546 "./critbit.w"
+#line 531 "./critbit.w"
 
 while(1&(intptr_t)p){
 critbit0_node*q= (void*)(p-1);
@@ -355,17 +357,17 @@ if(q->byte<ulen)top= p;
 }
 
 /*:24*/
-#line 532 "./critbit.w"
+#line 517 "./critbit.w"
 
 /*25:*/
-#line 562 "./critbit.w"
+#line 547 "./critbit.w"
 
 for(size_t i= 0;i<ulen;++i){
 if(p[i]!=ubytes[i])return 1;
 }
 
 /*:25*/
-#line 533 "./critbit.w"
+#line 518 "./critbit.w"
 
 
 return allprefixed_traverse(top,handle,arg);

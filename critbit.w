@@ -240,33 +240,18 @@ Once we have the XOR of first differing byte in |newotherbits| we need to find
 the most significant differing bit. We could do this with a simple for loop,
 testing bits 7..0, instead we use the following trick:
 
-The only non-zero values for which the sets of true bits for |x| and |x-1| are
-disjoint, are powers of two. To see this consider the bit representation of the
-value in three pieces: a series of zeros (maybe empty), a one, and zero or more
-ones and zeros.  Since we are only considering non-zero values this can be
-performed without loss of generality. If the third part contains any ones, this
-number is not a power of two and subtracting one will only alter the third
-part. Thus, in this case, |x| and |x-1| have at least one element in common:
-the leading one.
-
-However, if the third part consists only of zeros then the number is a power of
-two. Also, subtracting one will result in clearing the bit in the second part
-and turning the third part to all ones. Thus the sets are disjoint and
-|x & (x-1)| is false.
-
-So, we have a test for finding values with only a single bit set. Now consider
-that, if the test fails, |x & (x-1)| must preserve the most-significant one and
-must be less than |x|: since the bit pattern in the third part changes, at
-least one bit must be zeroed. Therefore, repeatedly applying the test and, if
-it fails, updating |x| in this fashion, must result in a value with only the
-leading one set.
+We recursively fold the upper bits into the lower bits to yield a byte |x| with
+all true bits below the most significant bit. Then |x & ~(x >> 1)| yields the
+most significant bit.
 
 Once we have this value, we invert all the bits resulting in a value suitable
 for our |otherbits| member.
 
 @<Find differing bit@>=
-  while (newotherbits & (newotherbits - 1)) newotherbits &= newotherbits - 1;
-  newotherbits ^= 255;
+  newotherbits |= newotherbits >> 1;
+  newotherbits |= newotherbits >> 2;
+  newotherbits |= newotherbits >> 4;
+  newotherbits = (newotherbits & ~(newotherbits >> 1)) ^ 255;
   uint8 c = p[newbyte];
   int newdirection = (1 + (newotherbits | c)) >> 8;
 
