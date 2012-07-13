@@ -1,5 +1,5 @@
 This code is taken from Dan Bernstein's qhasm and implements a binary
-crit-bit (alsa known as PATRICA) tree for |NUL| terminated strings. Crit-bit
+crit-bit (alsa known as PATRICIA) tree for |NUL| terminated strings. Crit-bit
 trees are underused and it's this author's hope that a good example will aid
 their adoption.
 
