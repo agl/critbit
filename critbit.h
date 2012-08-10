@@ -1,19 +1,18 @@
 #ifndef CRITBIT_H_
 #define CRITBIT_H_
 
-extern "C" {
-
 typedef struct {
   void *root;
-} critbit0_tree;
+  size_t keylen;
+  size_t valuelen;
+} critbitn_tree;
 
-int critbit0_contains(critbit0_tree *t, const char *u);
-int critbit0_insert(critbit0_tree *t, const char *u);
-int critbit0_delete(critbit0_tree *t, const char *u);
-void critbit0_clear(critbit0_tree *t);
-int critbit0_allprefixed(critbit0_tree *t, const char *prefix,
-                         int (*handle) (const char *, void *), void *arg);
-
-};
+void *critbitn_lookup(critbitn_tree *tree, const void *key);
+int critbitn_insert(critbitn_tree *tree, const void *key);
+int critbitn_delete(critbitn_tree *tree, const void *key);
+void critbitn_clear(critbitn_tree *tree);
+int critbitn_allprefixed(critbitn_tree *tree, const void *prefix,
+		int prefixbits, int (*handle) (const void *, void *), void *arg);
+void dump_traverse(void *top, int n);
 
 #endif  // CRITBIT_H_

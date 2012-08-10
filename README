@@ -1,5 +1,15 @@
+critbit trees for fixed length data
+===================================
+
+This is an adaptation of the original crit-bit code to fixed length byte-strings
+(instead of null-terminated character strings). The length is specified when
+the tree is created. The original PDF is left as reference but obviously no
+longer reflects the current state of the code.
+
+Original README
+---------------
 This code is taken from Dan Bernstein's qhasm and implements a binary
-crit-bit (alsa known as PATRICA) tree for |NUL| terminated strings. Crit-bit
+crit-bit (also known as PATRICA) tree for |NUL| terminated strings. Crit-bit
 trees are underused and it's this author's hope that a good example will aid
 their adoption.
 
