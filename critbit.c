@@ -69,8 +69,7 @@ int critbitn_insert(critbitn_tree *tree, const void *key) {
 		p = q->child[direction];
 	}
 
-	uint32 newbyte;
-	uint32 newotherbits;
+	uint32 newbyte, newotherbits;
 
 	for (newbyte = 0; newbyte < tree->keylen; ++newbyte) {
 		if (p[newbyte] != ubytes[newbyte]) {
@@ -79,10 +78,8 @@ int critbitn_insert(critbitn_tree *tree, const void *key) {
 		}
 	}
 
-	if (p[newbyte] != 0) {
-		newotherbits = p[newbyte];
-		goto different_byte_found;
-	}
+	// key exists, update value
+	memcpy(&p[tree->keylen], &ubytes[tree->keylen], tree->valuelen);
 	return 1;
 
 different_byte_found:

@@ -3,11 +3,9 @@
 #include <string.h>
 #include "critbit.h"
 
-/*
 typedef struct {
 	long key, value;
 } Entry;
-*/
 
 static void test_lookup() {
 	critbitn_tree tree = {0, sizeof(long), sizeof(long)};
@@ -23,6 +21,34 @@ static void test_lookup() {
 		p = critbitn_lookup(&tree, &elems[i]);
 		if (p == NULL) abort();
 		if (*(long *)p != elems[i+1]) abort();
+		nonelem = elems[i] - 1;
+		if (critbitn_lookup(&tree, &nonelem) != NULL) abort();
+	}
+
+	critbitn_clear(&tree);
+}
+
+static void test_update() {
+	critbitn_tree tree = {0, sizeof(long), sizeof(long)};
+	Entry entry;
+
+	static const long elems[] = {123, 456, 11223, 211, 34567, 8754, 1234, 0};
+	long nonelem;
+	void *p;
+
+	// insert elem[i] as key, with elem[i+1] as value
+	for (unsigned i = 0; elems[i]; ++i)
+		if (critbitn_insert(&tree, &elems[i]) != 2) abort();
+	for (unsigned i = 0; elems[i]; ++i) {
+		entry.key = elems[i];
+		entry.value = elems[i] + 2;
+		if (critbitn_insert(&tree, &entry) != 1) abort();
+	}
+
+	for (unsigned i = 0; elems[i]; ++i) {
+		p = critbitn_lookup(&tree, &elems[i]);
+		if (p == NULL) abort();
+		if (*(long *)p != elems[i] + 2) abort();
 		nonelem = elems[i] - 1;
 		if (critbitn_lookup(&tree, &nonelem) != NULL) abort();
 	}
@@ -124,6 +150,7 @@ static void test_allprefixed() {
 int
 main() {
 	test_lookup();
+	test_update();
 	test_delete();
 	test_allprefixed();
 	printf("Succes.\n");
