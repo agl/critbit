@@ -10,11 +10,11 @@ critbit.pdf: critbit.w
 
 #ctangle critbit.w
 critbit.o: critbit.c
-	gcc -Wall -c critbit.c -std=c99 -ggdb
+	gcc -Wall -O3 -std=c99 -c critbit.c
 
 critbit-test: critbit.o critbit-test.c
-	gcc -std=c99 -Wall -c critbit-test.c -ggdb
+	gcc -Wall -O3 -std=c99 -c critbit-test.c
 	gcc -o critbit-test critbit.o critbit-test.o
 
 clean:
-	rm *.o critbit-test
+	rm -f *.o critbit-test

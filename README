@@ -6,6 +6,38 @@ This is an adaptation of the original crit-bit code to fixed length byte-strings
 the tree is created. The original PDF is left as reference but obviously no
 longer reflects the current state of the code.
 
+Benchmarks
+----------
+A test with keys of 128 bits, against the Python dictionary (invoked from a
+Cython module).
+
+    Python dict          critbit
+    N = 755330           N = 755330
+    insert 0.5s          insert 1.07s
+    update 0.65s         update 1.04s
+    lookup 0.52s         lookup 0.74s
+    clear 0.09s          clear 0.14s
+
+    N = 1553301          N = 1553301
+    insert 1.26s         insert 3.37s
+    update 1.49s         update 3.39s
+    lookup 1.19s         lookup 2.77s
+    clear 0.26s          clear 0.45s
+
+    N = 3106602          N = 3106602
+    insert 2.19s         insert 8.9s
+    update 3.12s         update 8.81s
+    lookup 2.48s         lookup 7.61s
+    clear 0.48s          clear 1.12s
+    python -c 'import tt; tt.main()'  14.40s user 0.50s system 97% cpu 15.281 total
+    ./critbit-test  39.21s user 0.25s system 99% cpu 39.502 total
+
+Python's dictionary is of course hard to compete with, but it seems that the
+critbit tree does not scale well in this case of a large number of dense keys.
+Pre-allocating nodes to an array might help, but the fundamental problem is that
+as (an area of) the tree gets crowded, lots of critical bits need to be traversed
+before a leaf node is reached.
+
 Original README
 ---------------
 This code is taken from Dan Bernstein's qhasm and implements a binary

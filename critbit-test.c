@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "critbit.h"
 
 typedef struct {
@@ -147,12 +148,128 @@ static void test_allprefixed() {
 	critbitn_clear(&tree);
 }
 
-int
-main() {
+typedef struct {
+	unsigned int a;
+	unsigned long long b;
+} Item;
+typedef struct {
+	Item key;
+	double value;
+} ItemEntry;
+
+static void test_perf(long N) {
+	critbitn_tree tree = {0, sizeof(Item), sizeof(double)};
+	Item item;
+	ItemEntry entry;
+	clock_t start;
+	void *p;
+	entry.key = item;
+	//printf("\nN = %ld\n", N);
+
+	// insert elem[i] as key, with elem[i+1] as value
+	start = clock();
+	for (unsigned i = 0; i < N; ++i) {
+		entry.key.a = i % 1023;
+		entry.key.b = i ^ (i << 6);
+		entry.value = 0.234;
+		if (critbitn_insert(&tree, &entry) != 2) abort();;
+	}
+	//printf("insert %lgs\n", ((double) (clock() - start)) / CLOCKS_PER_SEC);
+
+	start = clock();
+	for (unsigned i = 0; i < N; ++i) {
+		entry.key.a = i % 1023;
+		entry.key.b = i ^ (i << 6);
+		p = critbitn_lookup(&tree, &entry.key);
+		if (p == NULL) abort();
+		if (*(double *)p != 0.234) abort();
+		entry.value = (i % 10) + 0.432;
+		if (critbitn_insert(&tree, &entry) != 1) abort();
+	}
+	//printf("update %lgs\n", ((double) (clock() - start)) / CLOCKS_PER_SEC);
+
+	start = clock();
+	for (unsigned i = 0; i < N; ++i) {
+		item.a = i % 1023;
+		item.b = i ^ (i << 6);
+		p = critbitn_lookup(&tree, &item);
+		if (p == NULL) abort();
+		if (*(double *)p != (i % 10) + 0.432) abort();
+	}
+	//printf("lookup %lgs\n", ((double) (clock() - start)) / CLOCKS_PER_SEC);
+
+	start = clock();
+	critbitn_clear(&tree);
+	//printf("clear %lgs\n", ((double) (clock() - start)) / CLOCKS_PER_SEC);
+}
+
+static void test_perf1(long N) {
+	critbitn_tree trees[1024]; // {0, sizeof(Item), sizeof(double)};
+	Item item;
+	ItemEntry entry;
+	void *p;
+	clock_t start;
+	entry.key = item;
+	printf("\nN = %ld\n", N);
+	for (unsigned i = 0; i < 1024; ++i) {
+		trees[i].root = 0;
+		trees[i].keylen = sizeof(Item);
+		trees[i].valuelen = sizeof(double);
+	}
+
+	// insert elem[i] as key, with elem[i+1] as value
+	start = clock();
+	for (unsigned i = 0; i < N; ++i) {
+		entry.key.a = i % 1023;
+		entry.key.b = i ^ (i << 6);
+		entry.value = 0.234;
+		if (critbitn_insert(&trees[entry.key.a], &entry) != 2) abort();;
+	}
+	printf("insert %lgs\n", ((double) (clock() - start)) / CLOCKS_PER_SEC);
+
+	start = clock();
+	for (unsigned i = 0; i < N; ++i) {
+		entry.key.a = i % 1023;
+		entry.key.b = i ^ (i << 6);
+		p = critbitn_lookup(&trees[entry.key.a], &entry.key);
+		if (p == NULL) abort();
+		if (*(double *)p != 0.234) abort();
+		entry.value = (i % 10) + 0.432;
+		if (critbitn_insert(&trees[entry.key.a], &entry) != 1) abort();
+	}
+	printf("update %lgs\n", ((double) (clock() - start)) / CLOCKS_PER_SEC);
+
+	start = clock();
+	for (unsigned i = 0; i < N; ++i) {
+		item.a = i % 1023;
+		item.b = i ^ (i << 6);
+		p = critbitn_lookup(&trees[item.a], &item);
+		if (p == NULL) abort();
+		if (*(double *)p != (i % 10) + 0.432) abort();
+	}
+	printf("lookup %lgs\n", ((double) (clock() - start)) / CLOCKS_PER_SEC);
+
+	start = clock();
+	for (unsigned i = 0; i < 1024; ++i)
+		critbitn_clear(&trees[i]);
+	printf("clear %lgs\n", ((double) (clock() - start)) / CLOCKS_PER_SEC);
+}
+
+int main() {
+	long N = 1553301;
+	//for (int a=0; a<1000; ++a) test_perf(10000);
+	test_perf(755330 / 4);
+	test_perf(755330 / 2);
+	test_perf(755330);
+	test_perf(1553301);
+	test_perf(2 * 1553301);
+	return 0;
+
 	test_lookup();
 	test_update();
 	test_delete();
 	test_allprefixed();
+	//test_perf(N);
 	printf("Succes.\n");
 	return 0;
 }
